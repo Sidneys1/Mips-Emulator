@@ -1,0 +1,221 @@
+﻿<Window x:Class="MipsEmulator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:MipsEmulator"
+        Title="MIPS Emulator" Height="720" Width="1280"
+        MinWidth="1280" MinHeight="720" WindowStartupLocation="CenterScreen">
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Name="Registers" Width="Auto"/>
+			<ColumnDefinition Name="Console" Width="2*"/>
+			<ColumnDefinition Name="Memory" Width="*"/>
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Name="Headers" Height="Auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+
+		<!-- Region Registers Column -->
+		
+		<TextBlock Text="Registers" Style="{StaticResource TextBlockHeaderStyle}" TextOptions.TextFormattingMode="Display"/>
+		<ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
+			<StackPanel Margin="3">
+				<Grid Margin="6,0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+					</Grid.RowDefinitions>
+
+					<TextBlock Grid.Row="0" Text="ip: " FontFamily="Courier New" ToolTip="Instruction Pointer" />
+					<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding InstructionPointer, StringFormat=0x\{0:X8\}}" VerticalAlignment="Center" HorizontalAlignment="Right" FontFamily="Courier New"/>
+				</Grid>
+				<GroupBox Header="General Registers">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+						</Grid.RowDefinitions>
+						<TextBlock Grid.Row="0" Text="$zero: " FontFamily="Courier New" ToolTip="Constant Register (0)" />
+						<TextBlock Grid.Row="0" Grid.Column="1" DataContext="{Binding Registers[0]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" VerticalAlignment="Center" HorizontalAlignment="Right" FontFamily="Courier New" ToolTip="{Binding IntValue}"/>
+						<TextBlock Grid.Row="1" Text="$at: " FontFamily="Courier New" ToolTip="Assembler Temporary" />
+						<TextBlock Grid.Row="1" Grid.Column="1" DataContext="{Binding Registers[1]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding IntValue}"/>
+						<TextBlock Grid.Row="2" Text="$gp: " FontFamily="Courier New" ToolTip="Global Pointer" />
+						<TextBlock Grid.Row="2" Grid.Column="1" DataContext="{Binding Registers[28]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding IntValue}"/>
+						<TextBlock Grid.Row="3" Text="$sp: " FontFamily="Courier New" ToolTip="Stack Pointer" />
+						<TextBlock Grid.Row="3" Grid.Column="1" DataContext="{Binding Registers[29]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding IntValue}"/>
+						<TextBlock Grid.Row="4" Text="$ra: " FontFamily="Courier New" ToolTip="Return Address" />
+						<TextBlock Grid.Row="4" Grid.Column="1" DataContext="{Binding Registers[31]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding IntValue}"/>
+					</Grid>
+				</GroupBox>
+				<GroupBox Header="Function Results">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+						</Grid.RowDefinitions>
+						<TextBlock Grid.Row="0" Text="$v0: " FontFamily="Courier New" />
+						<TextBlock Grid.Row="0" Grid.Column="1" DataContext="{Binding Registers[2]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding TipValue}"/>
+						<TextBlock Grid.Row="1" Text="$v1: " FontFamily="Courier New" />
+						<TextBlock Grid.Row="1" Grid.Column="1" DataContext="{Binding Registers[3]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding IntValue}"/>
+					</Grid>
+				</GroupBox>
+				<GroupBox Header="Function Arguments">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+						</Grid.RowDefinitions>
+						<TextBlock Grid.Row="0" Text="$a0: " FontFamily="Courier New" />
+						<TextBlock Grid.Row="0" Grid.Column="1" DataContext="{Binding Registers[4]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding IntValue}"/>
+						<TextBlock Grid.Row="1" Text="$a1: " FontFamily="Courier New" />
+						<TextBlock Grid.Row="1" Grid.Column="1" DataContext="{Binding Registers[5]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding IntValue}"/>
+						<TextBlock Grid.Row="2" Text="$a2: " FontFamily="Courier New" />
+						<TextBlock Grid.Row="2" Grid.Column="1" DataContext="{Binding Registers[6]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding IntValue}"/>
+						<TextBlock Grid.Row="3" Text="$a3: " FontFamily="Courier New" />
+						<TextBlock Grid.Row="3" Grid.Column="1" DataContext="{Binding Registers[7]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding IntValue}"/>
+					</Grid>
+				</GroupBox>
+				<GroupBox Header="Temporaries">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+						</Grid.RowDefinitions>
+						<TextBlock Grid.Row="0" Text="$t0: " FontFamily="Courier New" />
+						<TextBlock Grid.Row="0" Grid.Column="1" DataContext="{Binding Registers[8]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding IntValue}"/>
+						<TextBlock Grid.Row="1" Text="$t1: " FontFamily="Courier New" />
+						<TextBlock Grid.Row="1" Grid.Column="1" DataContext="{Binding Registers[9]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding IntValue}"/>
+						<TextBlock Grid.Row="2" Text="$t2: " FontFamily="Courier New" />
+						<TextBlock Grid.Row="2" Grid.Column="1" DataContext="{Binding Registers[10]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding IntValue}"/>
+						<TextBlock Grid.Row="3" Text="$t3: " FontFamily="Courier New" />
+						<TextBlock Grid.Row="3" Grid.Column="1" DataContext="{Binding Registers[11]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding IntValue}"/>
+						<TextBlock Grid.Row="4" Text="$t4: " FontFamily="Courier New" />
+						<TextBlock Grid.Row="4" Grid.Column="1" DataContext="{Binding Registers[12]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding IntValue}"/>
+						<TextBlock Grid.Row="5" Text="$t5: " FontFamily="Courier New" />
+						<TextBlock Grid.Row="5" Grid.Column="1" DataContext="{Binding Registers[13]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding IntValue}"/>
+						<TextBlock Grid.Row="6" Text="$t6: " FontFamily="Courier New" />
+						<TextBlock Grid.Row="6" Grid.Column="1" DataContext="{Binding Registers[14]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding IntValue}"/>
+						<TextBlock Grid.Row="7" Text="$t7: " FontFamily="Courier New" />
+						<TextBlock Grid.Row="7" Grid.Column="1" DataContext="{Binding Registers[15]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding IntValue}"/>
+						<TextBlock Grid.Row="8" Text="$t8: " FontFamily="Courier New" />
+						<TextBlock Grid.Row="8" Grid.Column="1" DataContext="{Binding Registers[24]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding IntValue}"/>
+						<TextBlock Grid.Row="9" Text="$t9: " FontFamily="Courier New" />
+						<TextBlock Grid.Row="9" Grid.Column="1" DataContext="{Binding Registers[25]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding IntValue}"/>
+					</Grid>
+				</GroupBox>
+				<GroupBox Header="Saved">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+						</Grid.RowDefinitions>
+						<TextBlock Grid.Row="0" Text="$s0: " FontFamily="Courier New" />
+						<TextBlock Grid.Row="0" Grid.Column="1" DataContext="{Binding Registers[16]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding IntValue}"/>
+						<TextBlock Grid.Row="1" Text="$s1: " FontFamily="Courier New" />
+						<TextBlock Grid.Row="1" Grid.Column="1" DataContext="{Binding Registers[17]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding IntValue}"/>
+						<TextBlock Grid.Row="2" Text="$s2: " FontFamily="Courier New" />
+						<TextBlock Grid.Row="2" Grid.Column="1" DataContext="{Binding Registers[18]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding IntValue}"/>
+						<TextBlock Grid.Row="3" Text="$s3: " FontFamily="Courier New" />
+						<TextBlock Grid.Row="3" Grid.Column="1" DataContext="{Binding Registers[19]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding IntValue}"/>
+						<TextBlock Grid.Row="4" Text="$s4: " FontFamily="Courier New" />
+						<TextBlock Grid.Row="4" Grid.Column="1" DataContext="{Binding Registers[20]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding IntValue}"/>
+						<TextBlock Grid.Row="5" Text="$s5: " FontFamily="Courier New" />
+						<TextBlock Grid.Row="5" Grid.Column="1" DataContext="{Binding Registers[21]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding IntValue}"/>
+						<TextBlock Grid.Row="6" Text="$s6: " FontFamily="Courier New" />
+						<TextBlock Grid.Row="6" Grid.Column="1" DataContext="{Binding Registers[22]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding IntValue}"/>
+						<TextBlock Grid.Row="7" Text="$s7: " FontFamily="Courier New" />
+						<TextBlock Grid.Row="7" Grid.Column="1" DataContext="{Binding Registers[23]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding IntValue}"/>
+						<TextBlock Grid.Row="8" Text="$s8: " FontFamily="Courier New" />
+						<TextBlock Grid.Row="8" Grid.Column="1" DataContext="{Binding Registers[30]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding IntValue}"/>
+					</Grid>
+				</GroupBox>
+				<GroupBox Header="Interrupts/Exceptions">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+						</Grid.RowDefinitions>
+						<TextBlock Grid.Row="0" Text="$k0: " FontFamily="Courier New" ToolTip="Interrupt/Exception Cause" />
+						<TextBlock Grid.Row="0" Grid.Column="1" DataContext="{Binding Registers[26]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding IntValue}"/>
+						<TextBlock Grid.Row="1" Text="$k1: " FontFamily="Courier New" ToolTip="Interrupt/Exception Status" />
+						<TextBlock Grid.Row="1" Grid.Column="1" DataContext="{Binding Registers[27]}" Text="{Binding Value, StringFormat=0x\{0:X8\}}" HorizontalAlignment="Right" FontFamily="Courier New" VerticalAlignment="Center" ToolTip="{Binding IntValue}"/>
+					</Grid>
+				</GroupBox>
+			</StackPanel>
+		</ScrollViewer>
+		
+		<!-- Endregion -->
+		
+		<!-- Region Control Column -->
+		
+		<TextBlock Text="Control" Grid.Column="1" Style="{StaticResource TextBlockHeaderStyle}"  TextOptions.TextFormattingMode="Display"/>
+		<Grid Grid.Column="1" Margin="5" Grid.Row="1">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*"/>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="3*"/>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="2*" />
+			</Grid.RowDefinitions>
+			<TextBlock Grid.Row="1" Text="Output Console" Style="{StaticResource TextBlockHeader2Style}"/>
+			<ScrollViewer Grid.Row="2" Background="Black" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+			<TextBlock Grid.Row="3" Text="CPU Debug Console" Style="{StaticResource TextBlockHeader2Style}"/>
+			<ScrollViewer Grid.Row="4" Background="Black" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+		</Grid>
+
+		<!-- Endregion -->
+
+		<!-- Region Memeory Column -->
+		
+		<TextBlock Text="Memory" Grid.Column="2" Style="{StaticResource TextBlockHeaderStyle}"  TextOptions.TextFormattingMode="Display"/>
+
+		<!-- Endregion -->
+	</Grid>
+</Window>
